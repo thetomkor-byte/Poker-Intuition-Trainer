@@ -26,36 +26,36 @@ const Bots = (() => {
 
   const CHARTS = {
     OPEN_UTG: [
-      '22+','A2s+','K9s+','Q9s+','J9s+','T9s','98s','87s','76s',
-      'ATo+','KJo+','QJo'
-    ],
-    OPEN_UTG1: [
-      '22+','A2s+','K9s+','Q9s+','J9s+','T9s','98s','87s','76s','65s',
+      '22+','A2s+','K7s+','Q8s+','J8s+','T8s+','97s+','86s+','75s+','64s+','54s',
       'ATo+','KJo+','QJo','JTo'
     ],
-    OPEN_MP: [
-      '22+','A2s+','K8s+','Q9s+','J9s+','T9s+','98s','87s','76s','65s','54s',
+    OPEN_UTG1: [
+      '22+','A2s+','K6s+','Q8s+','J8s+','T8s+','97s+','86s+','75s+','64s+','54s',
       'ATo+','KTo+','QTo+','JTo'
     ],
+    OPEN_MP: [
+      '22+','A2s+','K5s+','Q7s+','J7s+','T7s+','96s+','85s+','75s+','64s+','53s+','43s',
+      'A9o+','KTo+','QTo+','JTo','T9o'
+    ],
     OPEN_MP1: [
-      '22+','A2s+','K7s+','Q8s+','J8s+','T8s+','97s+','86s+','75s+','65s','54s',
-      'A9o+','KTo+','QTo+','JTo'
+      '22+','A2s+','K4s+','Q6s+','J7s+','T7s+','96s+','85s+','74s+','63s+','53s+','43s',
+      'A8o+','KTo+','QTo+','JTo','T9o','98o'
     ],
     OPEN_HJ: [
-      '22+','A2s+','K6s+','Q8s+','J8s+','T8s+','97s+','86s+','75s+','64s+','54s',
-      'A8o+','KTo+','QTo+','JTo'
+      '22+','A2s+','K3s+','Q6s+','J7s+','T7s+','96s+','85s+','74s+','63s+','52s+','43s',
+      'A7o+','KTo+','QTo+','JTo','T9o','98o'
     ],
     OPEN_CO: [
-      '22+','A2s+','K4s+','Q6s+','J7s+','T7s+','96s+','85s+','74s+','63s+','53s+','43s',
-      'A5o+','K9o+','Q9o+','J9o+','T9o','98o'
+      '22+','A2s+','K2s+','Q5s+','J6s+','T6s+','95s+','84s+','73s+','63s+','52s+','42s+','32s',
+      'A4o+','K9o+','Q9o+','J9o+','T9o','98o','87o'
     ],
     OPEN_BTN: [
-      '22+','A2s+','K2s+','Q4s+','J5s+','T6s+','95s+','84s+','73s+','62s+','52s+','42s+','32s',
-      'A2o+','K7o+','Q8o+','J8o+','T8o+','98o','87o','76o','65o'
+      '22+','A2s+','K2s+','Q2s+','J3s+','T5s+','94s+','83s+','72s+','62s+','52s+','42s+','32s',
+      'A2o+','K5o+','Q7o+','J8o+','T8o+','98o','87o','76o','65o'
     ],
     OPEN_SB: [
-      '22+','A2s+','K2s+','Q2s+','J4s+','T6s+','95s+','84s+','73s+','62s+','52s+','43s',
-      'A2o+','K5o+','Q7o+','J8o+','T8o+','98o','87o','76o','65o','54o'
+      '22+','A2s+','K2s+','Q2s+','J2s+','T4s+','93s+','82s+','72s+','62s+','52s+','42s+','32s',
+      'A2o+','K4o+','Q6o+','J7o+','T8o+','98o','87o','76o','65o','54o'
     ],
 
     THREE_BET_VS_UTG: ['QQ+','AKs','AKo','AQs','JJ','TT'],
@@ -66,7 +66,7 @@ const Bots = (() => {
 
     CALL_RAISE: [
       '22-99','A2s+','K9s+','Q9s+','J9s+','T8s+','98s','87s','76s','65s','54s',
-      'ATo+','KJo+','QJo','JTo','A9o','KTo'
+      'ATo+','KJo+','QJo','JTo','A9o','KTo','QTo'
     ],
 
     CALL_3BET: ['JJ','TT','99','88','AQs','AJs','KQs','AQo','ATs'],
@@ -198,7 +198,6 @@ const Bots = (() => {
     const stackBB = myStack / bb;
     const strength = preflopStrength(card1, card2);
 
-    // 1. Короткий стек — пуш-фолд
     if (stackBB <= 15 && !ctx.facingRaise) {
       if (stackBB <= 10) {
         if (handInChart(card1, card2, 'SHOVE_5_10BB')) return { action: 'allin', amount: myStack };
@@ -209,7 +208,6 @@ const Bots = (() => {
       return { action: 'fold', amount: 0 };
     }
 
-    // 2. Против олл-ина
     if (ctx.facingRaise && ctx.facingAllin) {
       if (handInChart(card1, card2, 'CALL_SHOVE') ||
           (strat.looseness > 0.7 && strength > 0.55)) {
@@ -218,7 +216,6 @@ const Bots = (() => {
       return { action: 'fold', amount: 0 };
     }
 
-    // 3. Против 3-бета
     if (ctx.facing3Bet) {
       if (handInChart(card1, card2, 'CALL_3BET') ||
           (strat.looseness > 0.6 && strength > 0.6)) {
@@ -231,7 +228,6 @@ const Bots = (() => {
       return { action: 'fold', amount: 0 };
     }
 
-    // 4. Против рейза (2-бет), но не 3-бет
     if (ctx.facingRaise) {
       const chart3bet = threeBetChartFor(ctx.raiserPosition);
       if (handInChart(card1, card2, chart3bet)) {
@@ -241,11 +237,9 @@ const Bots = (() => {
       if (handInChart(card1, card2, 'CALL_RAISE')) {
         return { action: 'call', amount: toCall };
       }
-      // Лузовые боты коллят шире
       if (strat.looseness > 0.6 && strength > 0.35) {
         return { action: 'call', amount: toCall };
       }
-      // Блеф-3бет
       if (strat.bluff > 0.4 && strength > 0.3 && Math.random() < strat.bluff * 0.3) {
         const size = Math.min(myStack, Math.round((pot + toCall) * 3));
         return { action: 'raise', amount: size };
@@ -253,13 +247,11 @@ const Bots = (() => {
       return { action: 'fold', amount: 0 };
     }
 
-    // 5. Никто не открывал — RFI
     const openChart = openChartFor(position);
     if (handInChart(card1, card2, openChart)) {
       const openSize = Math.round(bb * (numActive > 5 ? 3 : 2.5));
       return { action: 'raise', amount: Math.min(myStack, openSize) };
     }
-    // Блеф-открытие у лузовых
     if (strat.looseness > 0.7 && strength > 0.25 && Math.random() < strat.bluff * 0.5) {
       const openSize = Math.round(bb * 2.5);
       return { action: 'raise', amount: Math.min(myStack, openSize) };
@@ -300,7 +292,6 @@ const Bots = (() => {
     const strength = postflopStrength(handScore);
     const streetBonus = street === 'river' ? 0.05 : 0;
 
-    // Нет ставки
     if (toCall === 0) {
       if (strength + streetBonus > 0.65) {
         const betSize = Math.round(pot * (0.5 + strat.aggression * 0.3));
@@ -317,7 +308,6 @@ const Bots = (() => {
       return { action: 'check', amount: 0 };
     }
 
-    // Есть ставка
     const potOdds = toCall / (pot + toCall);
     if (strength + streetBonus > 0.75) {
       if (strat.aggression > 0.5 && Math.random() < strat.aggression) {
